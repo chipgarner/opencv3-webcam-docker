@@ -6,32 +6,33 @@ The docker image is available on [Docker Hub](https://hub.docker.com/r/chipgarne
 
 A sample run command is shown in [runme.sh](runme.sh) and listed below.  This runs on Ubuntu 14.04, and probably on other linux flavors. 
 
-GPU=0 ./nvidia-docker run --rm -it \  
-  -e DISPLAY=$DISPLAY \  
+xhost +
+
+GPU=0 ./nvidia-docker run --privileged --rm -it \  
+  --env DISPLAY=$DISPLAY \  
   --env="QT_X11_NO_MITSHM=1" \  
-  --privileged -v /dev/video0:/dev/video0 \  
-  --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro  \  
+  -v /dev/video0:/dev/video0 \  
+  -v /tmp/.X11-unix:/tmp/.X11-unix:ro  \  
   -v /home/jkg/PycharmProjects:/dev/projects \  
    chipgarner/opencv3-webcam:python2 bash
+   
+xhost -
+
+These instructions require setting xhost + on the host machine. I could not get the camera to work without xhost +. It should be possible to enable access to only the docker container. If you are not using the camera you should be able to get the display working without xhost + using one of the methods explained [here](http://wiki.ros.org/docker/Tutorials/GUI).
 
 Additional GPU's can be listed e.g. GPU=0, GPU=1. The [nvidia-docker](nvidia-docker) script replaces the docker run command. If you do not have an Nvidia GPU leave off the GPU=0 and use the standard docker run statement instead of ./nvida-docker run.
 
-**-e DISPLAY=$DISPLAY** sends the display id from the host to the container and probably needs to match the 0 in video0 below
+**--env DISPLAY=$DISPLAY** sends the display id from the host to the container.
 
 **--env="QT_X11_NO_MITSHM=1"** is required by OpenCV to show the display.
 
-**--privileged -v /dev/video0:/dev/video0**, more display stuff. This lets the container find the display. These instructions require setting xhost + on the host machine even though it uses --privileged.  I could not get the camera to work without xhost +.
+**-v /dev/video0:/dev/video0** This lets the container find the camera.
 
-**--privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro** This lets the container find the camera.
+**-v /tmp/.X11-unix:/tmp/.X11-unix:ro** This lets the container find the display via X server.
 
-**-v /home/jkg/PycharmProjects:/dev/projects** I use this for development. This is a possibly useful example of using "volume" to make a directory on the host available in the container. Delete it or pio\\oint it to your own directories.
+**-v /home/jkg/PycharmProjects:/dev/projects** I use this for development. This is a possibly useful example of using "volume" to make a directory on the host available in the container. Delete it or point it to your own directories.
 
 **chipgarner/opencv3-webcam:python2 bash** Part of the normal docker run command to start a container with a terminal running. Your image will have the same name if you pulled it from [Docker Hub](https://hub.docker.com/r/chipgarner/opencv3-webcam/).
-
-The camera and display only work if you call xhost + on the host system before running docker. This works great on my development machine but can be unfortunate in some situations.  I have not found a way to make the camera work with OpenCV without using xhost +. If (when) you forget to run xhost + before running the container you will see something like:  
-No protocol specified  
-: cannot connect to X server :0  
-If you are not using the camera you should be able to get the display working without xmod + using one of the methods explained [here](http://wiki.ros.org/docker/Tutorials/GUI).
 
 **webacmfaces.py** is a small script that might be useful for testing that everything is working. It should run as is in the container.  It prints the OpenCV version, prints the frame rate, and outlines any faces in front of the camera.  It uses the GPU and multiple CPUs. 
 
