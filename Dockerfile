@@ -1,4 +1,4 @@
-FROM cuda:7.5-cudnn3-devel
+FROM nvidia/cuda:7.5-cudnn3-devel
 
 MAINTAINER Chip Garner <chip@garnertotalenergy.com>
 
