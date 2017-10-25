@@ -19,7 +19,7 @@ t_count = 0.0
 t_sum = 0.0
 
 
-faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier('/opt/opencv-3.1.0/data/haarcascades_cuda/haarcascade_frontalface_default.xml')
 
 
 def get_faces(frm):
