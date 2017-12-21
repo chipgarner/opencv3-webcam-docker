@@ -66,6 +66,7 @@ RUN cd /opt && \
   make install && \
   echo "/usr/local/lib" | sudo tee -a /etc/ld.so.conf.d/opencv.conf && \
   ldconfig
+  ln /dev/null /dev/raw1394
 RUN cp /opt/opencv-3.1.0/build/lib/cv2.so /usr/lib/python2.7/dist-packages/cv2.so
 
 
