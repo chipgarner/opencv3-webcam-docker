@@ -1,21 +1,21 @@
 #Docker file for OpenCV with CUDA and a bash file example for using a webcam and display.
 
-##Opencv 3.1.0 using nvidia-docker images for CUDA version 7.5 and cuDNN 3. Includes a Python 2.7 example using a webcam and face detection. Works with or without a GPU. 
+##Opencv 3.1.0 using nvidia-docker images for CUDA version 7.5 and cuDNN 3. Includes a Python 2.7 example using a webcam and face detection. Works with or without a GPU.
 
 The docker image is available on [Docker Hub](https://hub.docker.com/r/chipgarner/opencv3-webcam/).
 
-A sample run command is shown in [runme.sh](runme.sh) and listed below.  This runs on Ubuntu 14.04, and probably on other linux flavors. 
+A sample run command is shown in [runme.sh](runme.sh) and listed below.  This runs on Ubuntu 14.04, and probably on other linux flavors.
 
 xhost +
 
-GPU=0 ./nvidia-docker run --privileged --rm -it \  
-  --env DISPLAY=$DISPLAY \  
-  --env="QT_X11_NO_MITSHM=1" \  
-  -v /dev/video0:/dev/video0 \  
-  -v /tmp/.X11-unix:/tmp/.X11-unix:ro  \  
-  -v /home/jkg/PycharmProjects:/dev/projects \  
+GPU=0 ./nvidia-docker run --privileged --rm -it \
+  --env DISPLAY=$DISPLAY \
+  --env="QT_X11_NO_MITSHM=1" \
+  -v /dev/video0:/dev/video0 \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:ro  \
+  -v /home/jkg/PycharmProjects:/dev/projects \
    chipgarner/opencv3-webcam:python2 bash
-   
+
 xhost -
 
 These instructions require setting xhost + on the host machine. I could not get the camera to work without xhost +. It should be possible to enable access to only the docker container. If you are not using the camera you should be able to get the display working without xhost + using one of the methods explained [here](http://wiki.ros.org/docker/Tutorials/GUI).
@@ -34,7 +34,7 @@ Additional GPU's can be listed e.g. GPU=0, GPU=1. The [nvidia-docker](nvidia-doc
 
 **chipgarner/opencv3-webcam:python2 bash** Part of the normal docker run command to start a container with a terminal running. Your image will have the same name if you pulled it from [Docker Hub](https://hub.docker.com/r/chipgarner/opencv3-webcam/).
 
-**webacmfaces.py** is a small script that might be useful for testing that everything is working. It should run as is in the container.  It prints the OpenCV version, prints the frame rate, and outlines any faces in front of the camera.  It uses the GPU and multiple CPUs. 
+**webcamfaces.py** is a small script that might be useful for testing that everything is working. It should run as is in the container.  It prints the OpenCV version, prints the frame rate, and outlines any faces in front of the camera.  It uses the GPU and multiple CPUs.
 
 ##Buliding the image from the Dockerfile.
 
@@ -46,15 +46,15 @@ You can build the image using cuDNN and CUDA, using just CUDA or using neither i
 
 ###Modify the Dockerfile:
 
-Modify the Dockerfile FROM to use the appropriate image:  
-    **FROM cuda:7.5-cudnn3-devel** (or whatever you called it) for cuDNN or,  
-    **FROM cudnn3:latest** (your name for just CUDA without cuDNN) for CUDA 0r,  
+Modify the Dockerfile FROM to use the appropriate image:
+    **FROM cuda:7.5-cudnn3-devel** (or whatever you called it) for cuDNN or,
+    **FROM cudnn3:latest** (your name for just CUDA without cuDNN) for CUDA 0r,
     **FROM ubuntu:14.04** for no CUDA GPU support.
-    
-Modify **make -j4** on line 65, the four should be the number of cores you have and wish to use for the make. 
+
+Modify **make -j4** on line 65, the four should be the number of cores you have and wish to use for the make.
 
 ### Run the [docker build](https://docs.docker.com/engine/reference/commandline/build/) command:
 
-For example:  
+For example:
 sudo docker build -t image-name:image-tag .
 

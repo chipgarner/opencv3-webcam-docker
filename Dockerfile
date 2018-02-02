@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y \
   libtheora-dev \
   libvorbis-dev \
   libxvidcore-dev \
-  x264 \ 
+  x264 \
   v4l-utils \
  # Doesn't work ffmpeg \
   libgtk2.0-dev \
@@ -65,7 +65,7 @@ RUN cd /opt && \
   make -j4 && \
   make install && \
   echo "/usr/local/lib" | sudo tee -a /etc/ld.so.conf.d/opencv.conf && \
-  ldconfig
+  ldconfig && \
   ln /dev/null /dev/raw1394
 RUN cp /opt/opencv-3.1.0/build/lib/cv2.so /usr/lib/python2.7/dist-packages/cv2.so
 
